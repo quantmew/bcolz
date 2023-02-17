@@ -166,21 +166,21 @@ __cpuidex(int32_t cpuInfo[4], int32_t function_id, int32_t subfunction_id) {
 /* Reads the content of an extended control register.
    https://software.intel.com/en-us/articles/how-to-detect-new-instruction-support-in-the-4th-generation-intel-core-processor-family
 */
-static inline uint64_t
-_xgetbv(uint32_t xcr) {
-  uint32_t eax, edx;
-  __asm__ __volatile__ (
-    /* "xgetbv"
-       This is specified as raw instruction bytes due to some older compilers
-       having issues with the mnemonic form.
-    */
-    ".byte 0x0f, 0x01, 0xd0":
-    "=a" (eax),
-    "=d" (edx) :
-    "c" (xcr)
-    );
-  return ((uint64_t)edx << 32) | eax;
-}
+// static inline uint64_t
+// _xgetbv(uint32_t xcr) {
+//   uint32_t eax, edx;
+//   __asm__ __volatile__ (
+//     /* "xgetbv"
+//        This is specified as raw instruction bytes due to some older compilers
+//        having issues with the mnemonic form.
+//     */
+//     ".byte 0x0f, 0x01, 0xd0":
+//     "=a" (eax),
+//     "=d" (edx) :
+//     "c" (xcr)
+//     );
+//   return ((uint64_t)edx << 32) | eax;
+// }
 
 #endif /* defined(_MSC_FULL_VER) */
 
