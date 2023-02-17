@@ -20,6 +20,7 @@ import tempfile
 import json
 import datetime
 import threading
+import mmap
 
 import numpy as np
 cimport numpy as np
@@ -765,7 +766,12 @@ cdef class chunks(object):
         schunkfile = self._chunk_file_name(nchunk)
         if not os.path.exists(schunkfile):
             raise ValueError("chunkfile %s not found" % schunkfile)
-        with open(schunkfile, 'rb') as schunk:
+        with open(schunkfile, 'rb') as f:
+            # TODO: just a function implementation with nonsense, will optimize later
+            if self._mmap:
+                schunk = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+            else:
+                schunk = f
             bloscpack_header = schunk.read(BLOSCPACK_HEADER_LENGTH)
             blosc_header_raw = schunk.read(BLOSC_HEADER_LENGTH)
             blosc_header = decode_blosc_header(blosc_header_raw)
@@ -775,6 +781,7 @@ cdef class chunks(object):
             # position
             schunk.seek(-BLOSC_HEADER_LENGTH, 1)
             scomp = schunk.read(ctbytes)
+
         return scomp
 
     def __iter__(self):
@@ -1051,13 +1058,14 @@ cdef class carray:
     def __cinit__(self, object array=None, object cparams=None,
                   object dtype=None, object dflt=None,
                   object expectedlen=None, object chunklen=None,
-                  object rootdir=None, object safe=True, object mode="a"):
+                  object rootdir=None, object safe=True, object mode="a", object mmap=False):
 
         self._rootdir = rootdir
         if mode not in ('r', 'w', 'a'):
             raise ValueError("mode should be 'r', 'w' or 'a'")
         self._mode = mode
         self._safe = safe
+        self._mmap = mmap
 
         if array is not None:
             self._create_carray(array, cparams, dtype, dflt,
