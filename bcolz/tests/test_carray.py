@@ -67,9 +67,9 @@ class initTest(TestCase):
             'a': np.arange(3),
             'b': np.arange(3)[::-1]
         })
-        ca = carray(df, dtype=np.dtype(np.float))
+        ca = carray(df, dtype=np.dtype(np.float64))
         assert_array_equal(df, ca)
-        self.assertEqual(ca.dtype, np.dtype(np.float),
+        self.assertEqual(ca.dtype, np.dtype(np.float64),
                          msg='carray has been created with invalid dtype')
 
     def test_dtype_None(self):
