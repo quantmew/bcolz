@@ -9,7 +9,7 @@ N = 1e8
 dtype = 'i4'
 
 t0 = time()
-a = np.ones(N, dtype=dtype)
+a = np.ones(int(N), dtype=dtype)
 print("Time numpy.ones() --> %.4f" % (time() - t0))
 
 t0 = time()
