@@ -110,8 +110,9 @@ def to_ndarray(array, dtype, arrlen=None, safe=True):
 
     # Arrays with a 0 stride are special
     if type(array) == np.ndarray and len(array.strides) and array.strides[0] == 0:
-        if array.dtype != dtype.base:
-            raise TypeError("dtypes do not match")
+        if dtype is not None:
+            if array.dtype != dtype.base:
+                raise TypeError("dtypes do not match")
         return array
 
     # Ensure that we have an ndarray of the correct dtype
